@@ -1,0 +1,1964 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UPAO UbNova - Ecosistema de Emprendimiento Universitario</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap 5 JavaScript Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Font Awesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chart.js for Dashboards -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --upao-blue: #003366;
+            --upao-blue-dark: #002244;
+            --upao-red: #C8102E;
+            --upao-gold: #D4AF37;
+            --upao-light-bg: #F4F6F9;
+            --upao-sidebar-width: 260px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--upao-light-bg);
+            color: #2D3748;
+            overflow-x: hidden;
+        }
+
+        /* Navbar & Branding */
+        .navbar-upao {
+            background-color: var(--upao-blue);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        }
+
+        .brand-logo-badge {
+            background-color: var(--upao-red);
+            font-size: 0.7rem;
+            letter-spacing: 0.5px;
+        }
+
+        /* Hero Banner */
+        .hero-section {
+            background: linear-gradient(135deg, var(--upao-blue-dark) 0%, var(--upao-blue) 60%, #0d5ca3 100%);
+            color: white;
+            border-radius: 24px;
+            padding: 3.5rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -40px;
+            right: -40px;
+            width: 280px;
+            height: 280px;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.25) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        /* Category Card */
+        .category-item-card {
+            border: 1px solid #E2E8F0;
+            border-radius: 16px;
+            background: white;
+            transition: all 0.25s ease;
+            cursor: pointer;
+        }
+
+        .category-item-card:hover, .category-item-card.active {
+            border-color: var(--upao-blue);
+            background-color: var(--upao-blue);
+            color: white !important;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 51, 102, 0.15);
+        }
+
+        .category-item-card:hover .cat-icon, .category-item-card.active .cat-icon {
+            color: var(--upao-gold) !important;
+        }
+
+        /* Product Cards */
+        .product-card {
+            border: none;
+            border-radius: 18px;
+            background: white;
+            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.04);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 14px 28px rgba(0,0,0,0.1);
+        }
+
+        .product-card-img-wrapper {
+            position: relative;
+            height: 190px;
+            overflow: hidden;
+            background-color: #EDF2F7;
+        }
+
+        .product-card-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .product-card:hover .product-card-img {
+            transform: scale(1.08);
+        }
+
+        /* Dashboard Sidebar Layout */
+        .dashboard-wrapper {
+            display: flex;
+            min-height: calc(100vh - 70px);
+        }
+
+        .sidebar-panel {
+            width: var(--upao-sidebar-width);
+            background-color: #1A202C;
+            color: #A0AEC0;
+            flex-shrink: 0;
+            transition: all 0.3s;
+        }
+
+        .sidebar-admin {
+            background-color: #0A111E;
+        }
+
+        .sidebar-panel .nav-link {
+            color: #CBD5E0;
+            padding: 0.8rem 1.25rem;
+            border-radius: 12px;
+            margin: 0.2rem 0.8rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sidebar-panel .nav-link:hover, .sidebar-panel .nav-link.active {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-panel .nav-link.active {
+            background-color: var(--upao-blue);
+            border-left: 4px solid var(--upao-gold);
+        }
+
+        .dashboard-content {
+            flex-grow: 1;
+            padding: 2rem;
+            background-color: #F8FAFC;
+        }
+
+        /* Chatbot Widget */
+        .assistant-widget-btn {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            z-index: 1080;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--upao-blue), #0052a3);
+            color: white;
+            box-shadow: 0 8px 24px rgba(0, 51, 102, 0.35);
+            border: 2px solid var(--upao-gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            cursor: pointer;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .assistant-widget-btn:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .assistant-chat-box {
+            position: fixed;
+            bottom: 95px;
+            right: 25px;
+            width: 360px;
+            height: 480px;
+            max-width: calc(100vw - 40px);
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            z-index: 1080;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid #E2E8F0;
+        }
+
+        .chat-messages-area {
+            flex-grow: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            background-color: #F7FAFC;
+        }
+
+        .chat-msg-bubble {
+            max-width: 82%;
+            padding: 0.65rem 1rem;
+            border-radius: 16px;
+            margin-bottom: 0.75rem;
+            font-size: 0.88rem;
+            line-height: 1.4;
+        }
+
+        .chat-msg-bot {
+            background-color: white;
+            border: 1px solid #E2E8F0;
+            color: #2D3748;
+            border-bottom-left-radius: 4px;
+        }
+
+        .chat-msg-user {
+            background-color: var(--upao-blue);
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+        }
+
+        /* Star Rating Icons */
+        .rating-stars {
+            color: var(--upao-gold);
+            font-size: 0.85rem;
+        }
+
+        /* Badges */
+        .status-badge-active { background-color: #DEF7EC; color: #03543F; }
+        .status-badge-pending { background-color: #FEF08A; color: #713F12; }
+        .status-badge-suspended { background-color: #FDE8E8; color: #9B1C1C; }
+
+        .whatsapp-btn-bg {
+            background-color: #25D366;
+            color: white;
+            border: none;
+        }
+        .whatsapp-btn-bg:hover {
+            background-color: #1EBE5D;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-upao sticky-top">
+        <div class="container-fluid px-lg-4">
+            <!-- Brand -->
+            <a class="navbar-brand d-flex align-items-center gap-2" href="#" onclick="navigateTo('home')">
+                <i class="fa-solid fa-graduation-cap text-warning fs-3"></i>
+                <div>
+                    <span class="fw-extrabold text-white fs-4 tracking-tight">UPAO</span>
+                    <span class="fw-extrabold text-warning fs-4">UbNova</span>
+                    <span class="brand-logo-badge badge ms-1 rounded-pill text-uppercase">Campus</span>
+                </div>
+            </a>
+
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="mainNavbar">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-3 fw-semibold">
+                    <li class="nav-item">
+                        <a class="nav-link nav-btn-public" href="#" onclick="navigateTo('home')"><i class="fa-solid fa-house me-1"></i> Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-btn-public" href="#" onclick="navigateTo('catalog')"><i class="fa-solid fa-store me-1"></i> Productos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-btn-public" href="#" onclick="navigateTo('ventures')"><i class="fa-solid fa-rocket me-1"></i> Emprendimientos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-btn-public" href="#" onclick="navigateTo('about')"><i class="fa-solid fa-circle-info me-1"></i> Sobre UbNova</a>
+                    </li>
+                </ul>
+
+                <!-- User Controls Right Side -->
+                <div class="d-flex align-items-center gap-2 mt-2 mt-lg-0" id="navbarControls">
+                    <!-- Dynamic rendering based on Auth State -->
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main id="appMainContainer">
+
+        <!-- ==================== VIEW 1: HOME ==================== -->
+        <section id="view-home" class="spa-view container py-4">
+            <!-- Hero Banner -->
+            <div class="hero-section mb-5 shadow-lg">
+                <div class="row align-items-center position-relative z-1">
+                    <div class="col-lg-7">
+                        <span class="badge bg-warning text-dark fw-bold px-3 py-2 rounded-pill mb-3">
+                            <i class="fa-solid fa-fire-flame-curved me-1"></i> Marketplace Universitario UPAO
+                        </span>
+                        <h1 class="display-5 fw-extrabold mb-3">Descubre, conecta y apoya el emprendimiento universitario.</h1>
+                        <p class="lead opacity-90 mb-4 fs-6">El espacio donde alumnos de la UPAO venden postres, servicios de diseño, tecnología, impresiones y tutorías directamente a sus compañeros.</p>
+                        <div class="d-flex flex-wrap gap-3">
+                            <button class="btn btn-warning btn-lg rounded-pill fw-bold px-4 text-dark shadow" onclick="navigateTo('catalog')">
+                                <i class="fa-solid fa-bag-shopping me-2"></i> Explorar Productos
+                            </button>
+                            <button class="btn btn-outline-light btn-lg rounded-pill fw-bold px-4" onclick="openRegisterModal()">
+                                <i class="fa-solid fa-plus-circle me-2"></i> Registra tu Emprendimiento
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-lg-5 text-center d-none d-lg-block">
+                        <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=600" class="img-fluid rounded-4 shadow-lg border border-3 border-white" style="transform: rotate(2deg);" alt="Estudiantes UPAO">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Global Search & Instant Filters -->
+            <div class="card border-0 shadow-sm rounded-4 p-3 mb-5">
+                <div class="row g-3">
+                    <div class="col-md-8">
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text bg-white border-end-0 rounded-start-pill ps-3"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+                            <input type="text" id="homeSearchInput" class="form-control border-start-0 rounded-end-pill fs-6" placeholder="¿Qué buscas hoy? (Ej: Brownies, AutoCAD, Fundas, Tutorías)..." onkeyup="handleHomeSearch(this.value)">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <select id="homeCategorySelect" class="form-select form-select-lg rounded-pill fs-6" onchange="filterCategoryHome(this.value)">
+                            <option value="all">Todas las Categorías</option>
+                            <!-- Dynamic Options -->
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Categories Showcase -->
+            <div class="mb-5">
+                <h4 class="fw-bold mb-1"><i class="fa-solid fa-shapes text-primary me-2"></i>Categorías Principales</h4>
+                <p class="text-muted small mb-4">Encuentra servicios y productos categorizados para la comunidad UPAO</p>
+                <div class="row row-cols-2 row-cols-sm-3 row-cols-md-5 row-cols-lg-6 g-3" id="homeCategoriesGrid">
+                    <!-- Dynamic Grid -->
+                </div>
+            </div>
+
+            <!-- Featured Products Showcase -->
+            <div class="mb-5">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h4 class="fw-bold mb-1"><i class="fa-solid fa-star text-warning me-2"></i>Productos & Servicios Destacados</h4>
+                        <p class="text-muted small mb-0">Lo más solicitado en el campus</p>
+                    </div>
+                    <button class="btn btn-link text-primary fw-bold text-decoration-none" onclick="navigateTo('catalog')">Ver Todos <i class="fa-solid fa-arrow-right ms-1"></i></button>
+                </div>
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" id="homeFeaturedProductsGrid">
+                    <!-- Dynamic Grid -->
+                </div>
+            </div>
+
+            <!-- Featured Ventures Showcase -->
+            <div class="mb-5">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h4 class="fw-bold mb-1"><i class="fa-solid fa-rocket text-danger me-2"></i>Emprendimientos Destacados</h4>
+                        <p class="text-muted small mb-0">Marcas e iniciativas creadas por tus compañeros</p>
+                    </div>
+                    <button class="btn btn-link text-primary fw-bold text-decoration-none" onclick="navigateTo('ventures')">Ver Todos <i class="fa-solid fa-arrow-right ms-1"></i></button>
+                </div>
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="homeVenturesGrid">
+                    <!-- Dynamic Grid -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== VIEW 2: CATALOG ==================== -->
+        <section id="view-catalog" class="spa-view container py-4 d-none">
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="#" onclick="navigateTo('home')">Inicio</a></li>
+                    <li class="breadcrumb-item active">Catálogo de Productos</li>
+                </ol>
+            </nav>
+
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+                <div>
+                    <h2 class="fw-bold mb-1">Catálogo General UPAO</h2>
+                    <p class="text-muted small mb-0">Explora todos los productos y servicios disponibles en el campus</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <input type="text" id="catalogSearchInput" class="form-control rounded-pill px-3" placeholder="Buscar por nombre..." onkeyup="renderCatalogView()">
+                    <select id="catalogCategorySelect" class="form-select rounded-pill px-3" onchange="renderCatalogView()">
+                        <option value="all">Todas las categorías</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" id="catalogGrid">
+                <!-- Dynamic Catalog Grid -->
+            </div>
+        </section>
+
+        <!-- ==================== VIEW 3: PRODUCT DETAIL ==================== -->
+        <section id="view-product-detail" class="spa-view container py-4 d-none">
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="#" onclick="navigateTo('catalog')">Catálogo</a></li>
+                    <li class="breadcrumb-item active" id="detailBreadcrumbTitle">Detalle</li>
+                </ol>
+            </nav>
+
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-5">
+                <div class="row g-0">
+                    <div class="col-md-6 bg-light d-flex align-items-center justify-content-center p-3">
+                        <img id="detailImg" src="" class="img-fluid rounded-3 shadow-sm object-fit-cover" style="max-height: 420px; width:100%;" alt="Producto">
+                    </div>
+                    <div class="col-md-6 p-4 p-lg-5 d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="badge bg-primary bg-opacity-10 text-primary fw-bold px-3 py-2 rounded-pill" id="detailCategory">Categoría</span>
+                                <span class="badge bg-success bg-opacity-10 text-success fw-bold px-3 py-2 rounded-pill" id="detailStock">En Stock</span>
+                            </div>
+                            <h2 class="fw-bold text-dark mb-2" id="detailTitle">Título del Producto</h2>
+                            <div class="d-flex align-items-center gap-2 mb-3">
+                                <a href="#" class="fw-semibold text-primary text-decoration-none" id="detailVentureLink"><i class="fa-solid fa-shop me-1"></i><span id="detailVenture">Nombre Emprendimiento</span></a>
+                                <span class="text-muted">•</span>
+                                <span class="rating-stars"><i class="fa-solid fa-star"></i> <span id="detailRating">4.9</span></span>
+                            </div>
+                            <h3 class="fw-extrabold text-success mb-4" id="detailPrice">S/. 0.00</h3>
+                            <p class="text-secondary mb-4" id="detailDescription">Descripción del producto...</p>
+                        </div>
+
+                        <div class="d-grid gap-3">
+                            <div class="d-flex gap-2">
+                                <input type="number" id="detailQtyInput" class="form-control rounded-pill text-center fw-bold" value="1" min="1" style="width: 80px;">
+                                <button class="btn btn-primary rounded-pill fw-bold flex-grow-1" onclick="addCurrentDetailToCart()">
+                                    <i class="fa-solid fa-cart-plus me-2"></i>Agregar al Carrito
+                                </button>
+                            </div>
+                            <a id="detailWhatsAppBtn" href="#" target="_blank" class="btn whatsapp-btn-bg rounded-pill fw-bold text-center py-2">
+                                <i class="fa-brands fa-whatsapp me-2 fs-5 align-middle"></i>Pedir Directamente por WhatsApp
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Reviews Section -->
+            <div class="card border-0 shadow-sm rounded-4 p-4">
+                <h4 class="fw-bold mb-4"><i class="fa-solid fa-comments text-primary me-2"></i>Reseñas de Estudiantes</h4>
+                
+                <!-- Add Review Form -->
+                <div class="bg-light p-3 rounded-4 mb-4">
+                    <h6 class="fw-bold mb-2">Deja tu opinión sobre este producto:</h6>
+                    <form onsubmit="handleNewReviewSubmit(event)">
+                        <div class="row g-2 mb-2">
+                            <div class="col-md-8">
+                                <input type="text" id="reviewAuthorInput" class="form-control rounded-pill" placeholder="Tu Nombre o Carrera (Ej: Juan - Industrial)" required>
+                            </div>
+                            <div class="col-md-4">
+                                <select id="reviewRatingSelect" class="form-select rounded-pill">
+                                    <option value="5">⭐⭐⭐⭐⭐ (5 Stars)</option>
+                                    <option value="4">⭐⭐⭐⭐ (4 Stars)</option>
+                                    <option value="3">⭐⭐⭐ (3 Stars)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <textarea id="reviewTextInput" class="form-control rounded-3 mb-2" rows="2" placeholder="¿Qué te pareció la atención, calidad o tiempo de entrega?" required></textarea>
+                        <button type="submit" class="btn btn-primary btn-sm rounded-pill px-4 fw-bold">Publicar Reseña</button>
+                    </form>
+                </div>
+
+                <div id="detailReviewsList">
+                    <!-- Dynamic Reviews -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== VIEW 4: VENTURE PROFILE ==================== -->
+        <section id="view-venture-profile" class="spa-view container py-4 d-none">
+            <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 mb-5 bg-white position-relative">
+                <div class="row align-items-center">
+                    <div class="col-auto">
+                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold display-5 shadow-sm" style="width: 90px; height: 90px;" id="ventureProfileAvatar">
+                            V
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
+                            <h2 class="fw-bold text-dark mb-0" id="ventureProfileName">Nombre Emprendimiento</h2>
+                            <span class="badge status-badge-active rounded-pill" id="ventureProfileStatus">Activo</span>
+                        </div>
+                        <p class="text-muted small mb-2"><i class="fa-solid fa-user-graduate me-1"></i>Propietario: <span id="ventureProfileOwner" class="fw-semibold">Estudiante UPAO</span> (<span id="ventureProfileFaculty">Facultad</span>)</p>
+                        <p class="text-secondary mb-3" id="ventureProfileBio">Descripción del emprendimiento...</p>
+                        <a id="ventureProfileWhatsAppBtn" href="#" target="_blank" class="btn whatsapp-btn-bg btn-sm rounded-pill px-4 fw-bold">
+                            <i class="fa-brands fa-whatsapp me-2"></i>Contactar por WhatsApp
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <h4 class="fw-bold mb-4">Productos Ofrecidos por este Emprendimiento</h4>
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" id="ventureProfileProductsGrid">
+                <!-- Dynamic Products -->
+            </div>
+        </section>
+
+        <!-- ==================== VIEW 5: VENTURES LIST ==================== -->
+        <section id="view-ventures" class="spa-view container py-4 d-none">
+            <div class="mb-4">
+                <h2 class="fw-bold mb-1">Emprendimientos Oficiales UPAO</h2>
+                <p class="text-muted small mb-0">Conoce los proyectos formales liderados por alumnos de las distintas facultades</p>
+            </div>
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="allVenturesGrid">
+                <!-- Dynamic Ventures List -->
+            </div>
+        </section>
+
+        <!-- ==================== VIEW 6: SHOPPING CART ==================== -->
+        <section id="view-cart" class="spa-view container py-4 d-none">
+            <h2 class="fw-bold mb-4"><i class="fa-solid fa-cart-shopping me-2 text-primary"></i>Tu Carrito de Compras</h2>
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <div class="card border-0 shadow-sm rounded-4 p-4" id="cartItemsContainer">
+                        <!-- Dynamic Cart List -->
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card border-0 shadow-sm rounded-4 p-4 sticky-top" style="top: 90px;">
+                        <h5 class="fw-bold mb-3">Resumen de Pedido</h5>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Subtotal:</span>
+                            <span class="fw-semibold" id="cartSubtotal">S/. 0.00</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-3">
+                            <span class="text-muted">Costo de Entrega (Campus):</span>
+                            <span class="text-success fw-bold">GRATIS</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between mb-4">
+                            <span class="fs-5 fw-bold">Total:</span>
+                            <span class="fs-4 fw-extrabold text-success" id="cartTotal">S/. 0.00</span>
+                        </div>
+                        <button class="btn whatsapp-btn-bg btn-lg w-100 rounded-pill fw-bold shadow-sm" onclick="processOrderWhatsApp()">
+                            <i class="fa-brands fa-whatsapp me-2 fs-5 align-middle"></i>Realizar Pedido por WhatsApp
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== VIEW 7: ABOUT UBNOVA ==================== -->
+        <section id="view-about" class="spa-view container py-4 d-none">
+            <div class="card border-0 shadow-sm rounded-4 p-5 text-center bg-white mb-4">
+                <div class="max-w-700 mx-auto">
+                    <i class="fa-solid fa-rocket text-primary fs-1 mb-3"></i>
+                    <h2 class="fw-extrabold mb-3">Sobre UPAO UbNova</h2>
+                    <p class="lead text-secondary mb-4">Ecosistema oficial para fomentar el talento emprendedor, la innovación y la colaboración comercial entre los estudiantes de la Universidad Privada Antenor Orrego.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== VIEW 8: DASHBOARD EMPRENDEDOR ==================== -->
+        <section id="view-dashboard-entrepreneur" class="spa-view d-none">
+            <div class="dashboard-wrapper">
+                <div class="sidebar-panel">
+                    <div class="p-3 text-white border-bottom border-secondary border-opacity-25">
+                        <span class="fw-bold text-warning small text-uppercase">Panel Emprendedor</span>
+                        <h6 class="fw-extrabold text-white mb-0 text-truncate" id="dashEntrepName">Mi Emprendimiento</h6>
+                    </div>
+                    <div class="py-3">
+                        <a href="#" class="nav-link active" onclick="switchDashEntrepTab('summary')"><i class="fa-solid fa-chart-pie"></i> Resumen / Dashboard</a>
+                        <a href="#" class="nav-link" onclick="switchDashEntrepTab('my-products')"><i class="fa-solid fa-box-archive"></i> Mis Productos</a>
+                        <a href="#" class="nav-link" onclick="switchDashEntrepTab('orders')"><i class="fa-solid fa-truck-ramp-box"></i> Pedidos Recibidos</a>
+                        <a href="#" class="nav-link" onclick="switchDashEntrepTab('reviews')"><i class="fa-solid fa-star"></i> Reseñas de Alumnos</a>
+                        <a href="#" class="nav-link" onclick="switchDashEntrepTab('settings')"><i class="fa-solid fa-gears"></i> Configuración Perfil</a>
+                        <hr class="border-secondary my-3 opacity-25">
+                        <a href="#" class="nav-link text-danger" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión</a>
+                    </div>
+                </div>
+
+                <div class="dashboard-content">
+                    <!-- Tab 1: Summary -->
+                    <div id="entrep-tab-summary">
+                        <h3 class="fw-bold mb-1">Bienvenido, <span id="entrepOwnerGreeting">Emprendedor</span></h3>
+                        <p class="text-muted small mb-4">Aquí está el rendimiento de tu negocio en el campus UPAO</p>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-3">
+                                <div class="card border-0 shadow-sm rounded-4 p-3 border-start border-4 border-primary">
+                                    <span class="text-muted small fw-bold text-uppercase">Productos Activos</span>
+                                    <h3 class="fw-bold text-dark mt-1 mb-0" id="statEntrepProducts">0</h3>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card border-0 shadow-sm rounded-4 p-3 border-start border-4 border-success">
+                                    <span class="text-muted small fw-bold text-uppercase">Pedidos Recibidos</span>
+                                    <h3 class="fw-bold text-dark mt-1 mb-0" id="statEntrepOrders">0</h3>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card border-0 shadow-sm rounded-4 p-3 border-start border-4 border-warning">
+                                    <span class="text-muted small fw-bold text-uppercase">Calificación Promedio</span>
+                                    <h3 class="fw-bold text-dark mt-1 mb-0">4.9 ⭐</h3>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card border-0 shadow-sm rounded-4 p-3 border-start border-4 border-info">
+                                    <span class="text-muted small fw-bold text-uppercase">Estado Cuenta</span>
+                                    <span class="badge status-badge-active fs-6 mt-1 rounded-pill" id="statEntrepStatus">Activo</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Chart Canvas -->
+                        <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+                            <h5 class="fw-bold mb-3">Ventas Estimadas / Contactos por Mes</h5>
+                            <canvas id="entrepSalesChart" style="max-height:280px;"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: My Products CRUD -->
+                    <div id="entrep-tab-my-products" class="d-none">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h3 class="fw-bold mb-0">Gestión de Mis Productos</h3>
+                            <button class="btn btn-primary rounded-pill fw-bold" onclick="openProductModal()">
+                                <i class="fa-solid fa-plus me-1"></i> Nuevo Producto
+                            </button>
+                        </div>
+                        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Producto</th>
+                                            <th>Categoría</th>
+                                            <th>Precio</th>
+                                            <th>Stock</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="entrepProductsTable">
+                                        <!-- Dynamic CRUD Rows -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 3: Orders -->
+                    <div id="entrep-tab-orders" class="d-none">
+                        <h3 class="fw-bold mb-4">Pedidos Recibidos por Alumnos</h3>
+                        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>ID Pedido</th>
+                                            <th>Cliente</th>
+                                            <th>Fecha</th>
+                                            <th>Total</th>
+                                            <th>Estado</th>
+                                            <th>Acción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="entrepOrdersTable">
+                                        <!-- Dynamic Orders Rows -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 4: Reviews -->
+                    <div id="entrep-tab-reviews" class="d-none">
+                        <h3 class="fw-bold mb-4">Reseñas y Retroalimentación</h3>
+                        <div id="entrepReviewsList" class="d-flex flex-column gap-3">
+                            <!-- Dynamic Reviews -->
+                        </div>
+                    </div>
+
+                    <!-- Tab 5: Settings -->
+                    <div id="entrep-tab-settings" class="d-none">
+                        <h3 class="fw-bold mb-4">Editar Perfil de Emprendimiento</h3>
+                        <div class="card border-0 shadow-sm rounded-4 p-4 max-w-700">
+                            <form onsubmit="handleSaveVentureProfile(event)">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold small">Nombre del Emprendimiento</label>
+                                    <input type="text" id="editVentureName" class="form-control rounded-3" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold small">WhatsApp de Contacto (con código de país 51)</label>
+                                    <input type="text" id="editVenturePhone" class="form-control rounded-3" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold small">Descripción del Negocio</label>
+                                    <textarea id="editVentureBio" class="form-control rounded-3" rows="3" required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary rounded-pill fw-bold px-4">Guardar Cambios</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== VIEW 9: DASHBOARD SUPERADMIN ==================== -->
+        <section id="view-dashboard-admin" class="spa-view d-none">
+            <div class="dashboard-wrapper">
+                <div class="sidebar-panel sidebar-admin">
+                    <div class="p-3 text-white border-bottom border-secondary border-opacity-25">
+                        <span class="fw-bold text-danger small text-uppercase"><i class="fa-solid fa-shield-halved me-1"></i>Superadmin</span>
+                        <h6 class="fw-extrabold text-white mb-0">Control Central UPAO</h6>
+                    </div>
+                    <div class="py-3">
+                        <a href="#" class="nav-link active" onclick="switchAdminTab('summary')"><i class="fa-solid fa-chart-line"></i> Dashboard Global</a>
+                        <a href="#" class="nav-link" onclick="switchAdminTab('ventures')"><i class="fa-solid fa-store"></i> Aprobar Emprendimientos</a>
+                        <a href="#" class="nav-link" onclick="switchAdminTab('users')"><i class="fa-solid fa-users"></i> Usuarios</a>
+                        <a href="#" class="nav-link" onclick="switchAdminTab('products')"><i class="fa-solid fa-boxes-stacked"></i> Productos Generales</a>
+                        <a href="#" class="nav-link" onclick="switchAdminTab('categories')"><i class="fa-solid fa-layer-group"></i> Categorías</a>
+                        <hr class="border-secondary my-3 opacity-25">
+                        <a href="#" class="nav-link text-danger" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión</a>
+                    </div>
+                </div>
+
+                <div class="dashboard-content">
+                    <!-- Admin Tab 1: Global Summary -->
+                    <div id="admin-tab-summary">
+                        <h3 class="fw-bold mb-1">Panel de Supervisión UPAO UbNova</h3>
+                        <p class="text-muted small mb-4">Métricas generales de la plataforma universitaria</p>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-3">
+                                <div class="card border-0 shadow-sm rounded-4 p-3 border-start border-4 border-primary">
+                                    <span class="text-muted small fw-bold text-uppercase">Usuarios Registrados</span>
+                                    <h3 class="fw-bold text-dark mt-1 mb-0" id="statAdminUsers">0</h3>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card border-0 shadow-sm rounded-4 p-3 border-start border-4 border-warning">
+                                    <span class="text-muted small fw-bold text-uppercase">Emprendimientos</span>
+                                    <h3 class="fw-bold text-dark mt-1 mb-0" id="statAdminVentures">0</h3>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card border-0 shadow-sm rounded-4 p-3 border-start border-4 border-info">
+                                    <span class="text-muted small fw-bold text-uppercase">Productos Publicados</span>
+                                    <h3 class="fw-bold text-dark mt-1 mb-0" id="statAdminProducts">0</h3>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card border-0 shadow-sm rounded-4 p-3 border-start border-4 border-success">
+                                    <span class="text-muted small fw-bold text-uppercase">Pedidos Totales</span>
+                                    <h3 class="fw-bold text-dark mt-1 mb-0" id="statAdminOrders">0</h3>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card border-0 shadow-sm rounded-4 p-4">
+                            <h5 class="fw-bold mb-3">Crecimiento de Emprendimientos y Usuarios</h5>
+                            <canvas id="adminGlobalChart" style="max-height:280px;"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Admin Tab 2: Approve Ventures -->
+                    <div id="admin-tab-ventures" class="d-none">
+                        <h3 class="fw-bold mb-4">Gestión y Aprobación de Emprendimientos</h3>
+                        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Emprendimiento</th>
+                                            <th>Propietario / Facultad</th>
+                                            <th>WhatsApp</th>
+                                            <th>Estado</th>
+                                            <th>Acciones de Moderación</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="adminVenturesTable">
+                                        <!-- Dynamic Ventures Moderation -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Admin Tab 3: Users -->
+                    <div id="admin-tab-users" class="d-none">
+                        <h3 class="fw-bold mb-4">Directorio de Usuarios Universitarios</h3>
+                        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Nombre</th>
+                                            <th>Correo</th>
+                                            <th>Rol</th>
+                                            <th>Estado</th>
+                                            <th>Acción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="adminUsersTable">
+                                        <!-- Dynamic Users -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Admin Tab 4: Products -->
+                    <div id="admin-tab-products" class="d-none">
+                        <h3 class="fw-bold mb-4">Supervisión de Productos Globales</h3>
+                        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle mb-0">
+                                    <tbody id="adminProductsGlobalTable">
+                                        <!-- Dynamic Products -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Admin Tab 5: Categories -->
+                    <div id="admin-tab-categories" class="d-none">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h3 class="fw-bold mb-0">Gestión de Categorías</h3>
+                            <button class="btn btn-primary rounded-pill fw-bold btn-sm" onclick="promptAddCategory()">+ Agregar Categoría</button>
+                        </div>
+                        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                            <ul class="list-group list-group-flush" id="adminCategoriesList">
+                                <!-- Dynamic List -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- CHATBOT WIDGET -->
+    <div class="assistant-widget-btn" onclick="toggleChatbot()">
+        <i class="fa-solid fa-robot"></i>
+    </div>
+
+    <div class="assistant-chat-box" id="assistantChatBox">
+        <div class="p-3 bg-primary text-white d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-2">
+                <i class="fa-solid fa-robot text-warning fs-5"></i>
+                <div>
+                    <h6 class="fw-bold mb-0 text-white">UbNova Assistant 🤖</h6>
+                    <span class="small opacity-75" style="font-size: 0.72rem;">Asistente Universitario UPAO</span>
+                </div>
+            </div>
+            <button class="btn-close btn-close-white" onclick="toggleChatbot()"></button>
+        </div>
+        <div class="chat-messages-area" id="chatMessagesContainer">
+            <div class="chat-msg-bubble chat-msg-bot">
+                ¡Hola! 👋 Soy tu asistente en UbNova. ¿En qué te puedo ayudar hoy?
+            </div>
+        </div>
+        <div class="p-2 border-top bg-white d-flex gap-2">
+            <input type="text" id="chatInputText" class="form-control rounded-pill form-control-sm" placeholder="Escribe tu consulta..." onkeydown="if(event.key==='Enter') sendChatMessage()">
+            <button class="btn btn-primary btn-sm rounded-circle px-2" onclick="sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <!-- MODAL: LOGIN -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4 shadow-lg">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold">Iniciar Sesión en UbNova</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="alert alert-info border-0 rounded-3 small mb-3">
+                        <i class="fa-solid fa-circle-info me-1"></i> <strong>Credenciales de Prueba:</strong><br>
+                        • Emprendedor: <code>emprendedor@upao.edu.pe</code> / <code>123456</code><br>
+                        • Superadmin: <code>admin@upao.edu.pe</code> / <code>admin123</code>
+                    </div>
+                    <form onsubmit="handleLoginSubmit(event)">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Correo Institucional UPAO</label>
+                            <input type="email" id="loginEmail" class="form-control rounded-3" placeholder="ejemplo@upao.edu.pe" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Contraseña</label>
+                            <input type="password" id="loginPass" class="form-control rounded-3" required>
+                        </div>
+                        <div class="d-grid gap-2 mb-3">
+                            <button type="submit" class="btn btn-primary rounded-pill fw-bold">Ingresar</button>
+                        </div>
+                        <div class="d-flex justify-content-between gap-2">
+                            <button type="button" class="btn btn-sm btn-outline-secondary w-50 rounded-pill" onclick="fillDemoAuth('emprendedor')">Demo Emprendedor</button>
+                            <button type="button" class="btn btn-sm btn-outline-dark w-50 rounded-pill" onclick="fillDemoAuth('admin')">Demo Superadmin</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: REGISTER ENTREPRENEUR -->
+    <div class="modal fade" id="registerModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0 rounded-4 shadow-lg">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold">Registro de Emprendimiento Universitario</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form onsubmit="handleRegisterSubmit(event)">
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Nombres y Apellidos</label>
+                                <input type="text" id="regName" class="form-control rounded-3" required placeholder="Juan Pérez">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Correo Institucional</label>
+                                <input type="email" id="regEmail" class="form-control rounded-3" required placeholder="jperez@upao.edu.pe">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Facultad</label>
+                                <select id="regFaculty" class="form-select rounded-3">
+                                    <option value="Ingeniería">Facultad de Ingeniería</option>
+                                    <option value="Medicina Humana">Facultad de Medicina Humana</option>
+                                    <option value="Derecho">Facultad de Derecho</option>
+                                    <option value="Ciencias Económicas">Facultad de Ciencias Económicas</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">WhatsApp de Atención</label>
+                                <input type="text" id="regPhone" class="form-control rounded-3" required placeholder="51987654321">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Nombre del Emprendimiento</label>
+                                <input type="text" id="regVentureName" class="form-control rounded-3" required placeholder="Ej: Sweet UPAO">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Categoría Principal</label>
+                                <select id="regCategory" class="form-select rounded-3">
+                                    <option value="Alimentos">Alimentos</option>
+                                    <option value="Bebidas">Bebidas</option>
+                                    <option value="Tecnología">Tecnología</option>
+                                    <option value="Educación">Educación</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small fw-bold">Descripción del Emprendimiento</label>
+                                <textarea id="regDescription" class="form-control rounded-3" rows="2" required placeholder="¿Qué productos vendes y cuál es tu valor agregado?"></textarea>
+                            </div>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary rounded-pill fw-bold">Registrar Emprendimiento</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: ADD/EDIT PRODUCT (ENTREPRENEUR) -->
+    <div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4 shadow-lg">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold" id="productModalTitle">Publicar Producto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form onsubmit="handleSaveProductSubmit(event)">
+                        <input type="hidden" id="prodEditId">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Nombre del Producto / Servicio</label>
+                            <input type="text" id="prodTitle" class="form-control rounded-3" required placeholder="Ej: Brownie de Nutella">
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <label class="form-label small fw-bold">Categoría</label>
+                                <select id="prodCategory" class="form-select rounded-3"></select>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-bold">Precio (S/.)</label>
+                                <input type="number" step="0.5" id="prodPrice" class="form-control rounded-3" required placeholder="5.00">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">URL de la Imagen (Unsplash)</label>
+                            <input type="url" id="prodImage" class="form-control rounded-3" placeholder="https://images.unsplash.com/...">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Descripción Detallada</label>
+                            <textarea id="prodDesc" class="form-control rounded-3" rows="3" required></textarea>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary rounded-pill fw-bold">Guardar Publicación</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div class="toast-container position-fixed bottom-0 start-0 p-3" style="z-index: 1090;">
+        <div id="appToast" class="toast align-items-center text-bg-dark border-0 rounded-4 shadow" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body" id="toastMsg">
+                    Notificación
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* ==================== SEED INITIAL DATA ==================== */
+        const INITIAL_CATEGORIES = [
+            { id: "Alimentos", icon: "fa-cookie-bite" },
+            { id: "Bebidas", icon: "fa-mug-hot" },
+            { id: "Ropa y accesorios", icon: "fa-shirt" },
+            { id: "Tecnología", icon: "fa-laptop" },
+            { id: "Diseño", icon: "fa-palette" },
+            { id: "Educación", icon: "fa-graduation-cap" },
+            { id: "Servicios", icon: "fa-wrench" },
+            { id: "Regalos", icon: "fa-gift" }
+        ];
+
+        const INITIAL_USERS = [
+            { id: 1, name: "María Fernández", email: "emprendedor@upao.edu.pe", role: "emprendedor", status: "activo", faculty: "Ingeniería" },
+            { id: 2, name: "Admin General UPAO", email: "admin@upao.edu.pe", role: "admin", status: "activo", faculty: "Sistemas" },
+            { id: 3, name: "Carlos Ramos", email: "cramos@upao.edu.pe", role: "estudiante", status: "activo", faculty: "Derecho" }
+        ];
+
+        const INITIAL_VENTURES = [
+            {
+                id: 101,
+                name: "Dulce Tentación UPAO",
+                owner: "María Fernández",
+                faculty: "Ingeniería Industrial",
+                phone: "51987654321",
+                status: "Activo",
+                bio: "Emprendimiento de estudiantes UPAO dedicado a la elaboración artesanal de brownies, galletas y postres."
+            },
+            {
+                id: 102,
+                name: "TechUP Campus",
+                owner: "Kevin Sánchez",
+                faculty: "Ingeniería de Sistemas",
+                phone: "51987654322",
+                status: "Activo",
+                bio: "Accesorios tecnológicos, gadets, mantenimiento de laptops y formato de software."
+            },
+            {
+                id: 103,
+                name: "Diseño Creativo UPAO",
+                owner: "Lucía Benites",
+                faculty: "Ciencias de la Comunicación",
+                phone: "51987654323",
+                status: "Activo",
+                bio: "Servicios de diseño gráfico, logos, presentaciones académicas e impresiones de stickers."
+            },
+            {
+                id: 104,
+                name: "Asesorías Exactas",
+                owner: "Jorge Miranda",
+                faculty: "Ingeniería Civil",
+                phone: "51987654324",
+                status: "Pendiente",
+                bio: "Tutorías personalizadas en Cálculo, Física y Estadística para alumnos de primeros ciclos."
+            }
+        ];
+
+        const INITIAL_PRODUCTS = [
+            {
+                id: 1,
+                title: "Brownie de Chocolate Fudge",
+                ventureId: 101,
+                ventureName: "Dulce Tentación UPAO",
+                category: "Alimentos",
+                price: 5.00,
+                rating: 5.0,
+                phone: "51987654321",
+                image: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&q=80&w=600",
+                description: "Delicioso brownie melcochoso hecho con cacao peruano y topping de fudge.",
+                reviews: [{ user: "Carlos R.", rating: 5, text: "Súper fresco y delicioso!" }]
+            },
+            {
+                id: 2,
+                title: "Cheesecake de Frutos Rojos",
+                ventureId: 101,
+                ventureName: "Dulce Tentación UPAO",
+                category: "Alimentos",
+                price: 8.00,
+                rating: 4.8,
+                phone: "51987654321",
+                image: "https://images.unsplash.com/photo-1533134242443-d4fd215305ad?auto=format&fit=crop&q=80&w=600",
+                description: "Porción individual con mermelada casera de fresas y arándanos.",
+                reviews: []
+            },
+            {
+                id: 3,
+                title: "Mouse Inalámbrico Ergonómico",
+                ventureId: 102,
+                ventureName: "TechUP Campus",
+                category: "Tecnología",
+                price: 25.00,
+                rating: 4.5,
+                phone: "51987654322",
+                image: "https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?auto=format&fit=crop&q=80&w=600",
+                description: "Conexión Bluetooth y USB 2.4G. Silencioso e ideal para laptops de estudio.",
+                reviews: []
+            },
+            {
+                id: 4,
+                title: "Diseño de Logo & Marca Estudiantil",
+                ventureId: 103,
+                ventureName: "Diseño Creativo UPAO",
+                category: "Diseño",
+                price: 30.00,
+                rating: 5.0,
+                phone: "51987654323",
+                image: "https://images.unsplash.com/photo-1626785774573-4b799315345d?auto=format&fit=crop&q=80&w=600",
+                description: "Incluye 2 propuestas de diseño, paleta de colores y archivos editables.",
+                reviews: []
+            },
+            {
+                id: 5,
+                title: "Café Pasado Orgánico 12oz",
+                ventureId: 101,
+                ventureName: "Dulce Tentación UPAO",
+                category: "Bebidas",
+                price: 6.00,
+                rating: 4.7,
+                phone: "51987654321",
+                image: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&q=80&w=600",
+                description: "Café de grano de Jaén molido al instante. Ideal para clases mañaneras.",
+                reviews: []
+            },
+            {
+                id: 6,
+                title: "Clase de Tutoría Cálculo I (1 Hora)",
+                ventureId: 104,
+                ventureName: "Asesorías Exactas",
+                category: "Educación",
+                price: 20.00,
+                rating: 4.9,
+                phone: "51987654324",
+                image: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&q=80&w=600",
+                description: "Resolución de ejercicios prácticos y preparación para exámenes parciales.",
+                reviews: []
+            }
+        ];
+
+        /* ==================== GLOBAL STATE PERSISTENCE ==================== */
+        let state = {
+            categories: JSON.parse(localStorage.getItem('ubnova_categories')) || INITIAL_CATEGORIES,
+            users: JSON.parse(localStorage.getItem('ubnova_users')) || INITIAL_USERS,
+            ventures: JSON.parse(localStorage.getItem('ubnova_ventures')) || INITIAL_VENTURES,
+            products: JSON.parse(localStorage.getItem('ubnova_products')) || INITIAL_PRODUCTS,
+            cart: JSON.parse(localStorage.getItem('ubnova_cart')) || [],
+            currentUser: JSON.parse(localStorage.getItem('ubnova_auth_user')) || null,
+            currentView: 'home',
+            selectedProductId: null,
+            selectedVentureId: null
+        };
+
+        function saveState() {
+            localStorage.setItem('ubnova_categories', JSON.stringify(state.categories));
+            localStorage.setItem('ubnova_users', JSON.stringify(state.users));
+            localStorage.setItem('ubnova_ventures', JSON.stringify(state.ventures));
+            localStorage.setItem('ubnova_products', JSON.stringify(state.products));
+            localStorage.setItem('ubnova_cart', JSON.stringify(state.cart));
+            localStorage.setItem('ubnova_auth_user', JSON.stringify(state.currentUser));
+        }
+
+        /* ==================== SPA NAVIGATION CONTROLLER ==================== */
+        function navigateTo(viewId, param = null) {
+            state.currentView = viewId;
+            if (viewId === 'product-detail' && param) state.selectedProductId = param;
+            if (viewId === 'venture-profile' && param) state.selectedVentureId = param;
+
+            document.querySelectorAll('.spa-view').forEach(el => el.classList.add('d-none'));
+
+            const targetView = document.getElementById(`view-${viewId}`);
+            if (targetView) targetView.classList.remove('d-none');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Render specific view dynamics
+            if (viewId === 'home') renderHomeView();
+            if (viewId === 'catalog') renderCatalogView();
+            if (viewId === 'product-detail') renderProductDetailView();
+            if (viewId === 'venture-profile') renderVentureProfileView();
+            if (viewId === 'ventures') renderVenturesListView();
+            if (viewId === 'cart') renderCartView();
+            if (viewId === 'dashboard-entrepreneur') renderEntrepreneurDashboard();
+            if (viewId === 'dashboard-admin') renderAdminDashboard();
+
+            updateNavbarState();
+        }
+
+        function updateNavbarState() {
+            const container = document.getElementById('navbarControls');
+            const cartBadgeCount = state.cart.reduce((sum, i) => sum + i.quantity, 0);
+
+            let authBtnsHtml = '';
+            if (state.currentUser) {
+                if (state.currentUser.role === 'admin') {
+                    authBtnsHtml = `<button class="btn btn-warning rounded-pill btn-sm fw-bold me-2" onclick="navigateTo('dashboard-admin')"><i class="fa-solid fa-shield-halved me-1"></i> Panel Admin</button>`;
+                } else {
+                    authBtnsHtml = `<button class="btn btn-outline-light rounded-pill btn-sm fw-bold me-2" onclick="navigateTo('dashboard-entrepreneur')"><i class="fa-solid fa-gauge me-1"></i> Mi Panel</button>`;
+                }
+                authBtnsHtml += `<button class="btn btn-danger btn-sm rounded-circle" onclick="logout()" title="Cerrar Sesión"><i class="fa-solid fa-power-off"></i></button>`;
+            } else {
+                authBtnsHtml = `
+                    <button class="btn btn-outline-light btn-sm rounded-pill fw-bold" onclick="openLoginModal()">Iniciar Sesión</button>
+                    <button class="btn btn-warning btn-sm rounded-pill fw-bold text-dark" onclick="openRegisterModal()">Registrarse</button>
+                `;
+            }
+
+            container.innerHTML = `
+                <button class="btn btn-outline-light rounded-circle position-relative me-2" onclick="navigateTo('cart')">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">${cartBadgeCount}</span>
+                </button>
+                ${authBtnsHtml}
+            `;
+        }
+
+        /* ==================== HOME VIEW RENDERING ==================== */
+        function renderHomeView() {
+            // Select category
+            const catSelect = document.getElementById('homeCategorySelect');
+            catSelect.innerHTML = `<option value="all">Todas las Categorías</option>` + 
+                state.categories.map(c => `<option value="${c.id}">${c.id}</option>`).join('');
+
+            // Category Grid
+            const catGrid = document.getElementById('homeCategoriesGrid');
+            catGrid.innerHTML = state.categories.map(c => `
+                <div class="col">
+                    <div class="category-item-card p-3 text-center h-100 d-flex flex-column align-items-center justify-content-center" onclick="filterCategoryHome('${c.id}')">
+                        <i class="fa-solid ${c.icon} cat-icon text-primary fs-3 mb-2"></i>
+                        <span class="fw-semibold small text-dark mb-0">${c.id}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            // Featured Products Grid
+            renderProductGrid('homeFeaturedProductsGrid', state.products.slice(0, 4));
+
+            // Featured Ventures Grid
+            const ventGrid = document.getElementById('homeVenturesGrid');
+            ventGrid.innerHTML = state.ventures.filter(v => v.status === 'Activo').slice(0, 3).map(v => `
+                <div class="col">
+                    <div class="card border-0 rounded-4 shadow-sm p-4 h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex align-items-center gap-3 mb-3">
+                                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold fs-4" style="width:50px; height:50px;">
+                                    ${v.name.charAt(0)}
+                                </div>
+                                <div>
+                                    <h5 class="fw-bold mb-0 text-dark">${v.name}</h5>
+                                    <span class="text-muted small">${v.faculty}</span>
+                                </div>
+                            </div>
+                            <p class="text-secondary small mb-3">${v.bio}</p>
+                        </div>
+                        <button class="btn btn-outline-primary btn-sm rounded-pill fw-bold w-100" onclick="navigateTo('venture-profile', ${v.id})">
+                            Ver Emprendimiento
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderProductGrid(targetId, productList) {
+            const container = document.getElementById(targetId);
+            if (!container) return;
+
+            if (productList.length === 0) {
+                container.innerHTML = `<div class="col-12 py-4 text-center text-muted">No se encontraron productos.</div>`;
+                return;
+            }
+
+            container.innerHTML = productList.map(p => `
+                <div class="col">
+                    <div class="product-card">
+                        <div class="product-card-img-wrapper">
+                            <img src="${p.image}" class="product-card-img" alt="${p.title}">
+                            <span class="badge bg-dark bg-opacity-75 text-white position-absolute top-0 start-0 m-2 rounded-pill small">${p.category}</span>
+                        </div>
+                        <div class="p-3 d-flex flex-column flex-grow-1 justify-content-between">
+                            <div>
+                                <span class="text-muted small fw-semibold d-block mb-1"><i class="fa-solid fa-shop text-primary me-1"></i>${p.ventureName}</span>
+                                <h6 class="fw-bold text-dark mb-2 text-truncate">${p.title}</h6>
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="fw-extrabold fs-5 text-success">S/. ${p.price.toFixed(2)}</span>
+                                    <span class="rating-stars"><i class="fa-solid fa-star"></i> ${p.rating}</span>
+                                </div>
+                            </div>
+                            <div class="d-grid gap-2 mt-2">
+                                <button class="btn btn-outline-primary btn-sm rounded-pill fw-bold" onclick="navigateTo('product-detail', ${p.id})">
+                                    Ver Detalle
+                                </button>
+                                <button class="btn btn-primary btn-sm rounded-pill fw-bold" onclick="addToCart(${p.id})">
+                                    <i class="fa-solid fa-cart-plus me-1"></i> Agregar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterCategoryHome(catId) {
+            document.getElementById('catalogCategorySelect').value = catId;
+            navigateTo('catalog');
+        }
+
+        function handleHomeSearch(query) {
+            document.getElementById('catalogSearchInput').value = query;
+            navigateTo('catalog');
+        }
+
+        /* ==================== CATALOG VIEW RENDERING ==================== */
+        function renderCatalogView() {
+            const searchVal = document.getElementById('catalogSearchInput').value.toLowerCase();
+            const catVal = document.getElementById('catalogCategorySelect').value;
+
+            // Update category select
+            const catSelect = document.getElementById('catalogCategorySelect');
+            catSelect.innerHTML = `<option value="all">Todas las categorías</option>` + 
+                state.categories.map(c => `<option value="${c.id}" ${c.id === catVal ? 'selected' : ''}>${c.id}</option>`).join('');
+
+            let filtered = state.products.filter(p => {
+                const matchesSearch = p.title.toLowerCase().includes(searchVal) || p.description.toLowerCase().includes(searchVal);
+                const matchesCat = (catVal === 'all' || p.category === catVal);
+                return matchesSearch && matchesCat;
+            });
+
+            renderProductGrid('catalogGrid', filtered);
+        }
+
+        /* ==================== PRODUCT DETAIL RENDERING ==================== */
+        function renderProductDetailView() {
+            const product = state.products.find(p => p.id === state.selectedProductId);
+            if (!product) return;
+
+            document.getElementById('detailBreadcrumbTitle').textContent = product.title;
+            document.getElementById('detailImg').src = product.image;
+            document.getElementById('detailCategory').textContent = product.category;
+            document.getElementById('detailTitle').textContent = product.title;
+            document.getElementById('detailVenture').textContent = product.ventureName;
+            document.getElementById('detailVentureLink').onclick = () => navigateTo('venture-profile', product.ventureId);
+            document.getElementById('detailRating').textContent = product.rating;
+            document.getElementById('detailPrice').textContent = `S/. ${product.price.toFixed(2)}`;
+            document.getElementById('detailDescription').textContent = product.description;
+
+            // WhatsApp Message Generator
+            const waMsg = encodeURIComponent(`Hola! Vi tu producto "${product.title}" en UPAO UbNova y quisiera solicitar más información.`);
+            document.getElementById('detailWhatsAppBtn').href = `https://wa.me/${product.phone}?text=${waMsg}`;
+
+            // Render Reviews
+            const reviewsList = document.getElementById('detailReviewsList');
+            if (product.reviews && product.reviews.length > 0) {
+                reviewsList.innerHTML = product.reviews.map(r => `
+                    <div class="border-bottom py-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <strong class="text-dark">${r.user}</strong>
+                            <span class="rating-stars">${'★'.repeat(r.rating)}</span>
+                        </div>
+                        <p class="text-secondary small mb-0">${r.text}</p>
+                    </div>
+                `).join('');
+            } else {
+                reviewsList.innerHTML = `<p class="text-muted small">Aún no hay reseñas registradas para este producto.</p>`;
+            }
+        }
+
+        function handleNewReviewSubmit(e) {
+            e.preventDefault();
+            const author = document.getElementById('reviewAuthorInput').value;
+            const rating = parseInt(document.getElementById('reviewRatingSelect').value);
+            const text = document.getElementById('reviewTextInput').value;
+
+            const product = state.products.find(p => p.id === state.selectedProductId);
+            if (product) {
+                if (!product.reviews) product.reviews = [];
+                product.reviews.push({ user: author, rating, text });
+                saveState();
+                renderProductDetailView();
+                showToast("¡Reseña publicada con éxito!");
+                e.target.reset();
+            }
+        }
+
+        /* ==================== VENTURE PROFILE RENDERING ==================== */
+        function renderVentureProfileView() {
+            const venture = state.ventures.find(v => v.id === state.selectedVentureId);
+            if (!venture) return;
+
+            document.getElementById('ventureProfileAvatar').textContent = venture.name.charAt(0);
+            document.getElementById('ventureProfileName').textContent = venture.name;
+            document.getElementById('ventureProfileOwner').textContent = venture.owner;
+            document.getElementById('ventureProfileFaculty').textContent = venture.faculty;
+            document.getElementById('ventureProfileBio').textContent = venture.bio;
+            document.getElementById('ventureProfileStatus').textContent = venture.status;
+
+            const waMsg = encodeURIComponent(`Hola ${venture.name}, te contacto desde la plataforma UPAO UbNova.`);
+            document.getElementById('ventureProfileWhatsAppBtn').href = `https://wa.me/${venture.phone}?text=${waMsg}`;
+
+            const vProducts = state.products.filter(p => p.ventureId === venture.id);
+            renderProductGrid('ventureProfileProductsGrid', vProducts);
+        }
+
+        function renderVenturesListView() {
+            const container = document.getElementById('allVenturesGrid');
+            container.innerHTML = state.ventures.map(v => `
+                <div class="col">
+                    <div class="card border-0 rounded-4 shadow-sm p-4 h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex align-items-center gap-3 mb-3">
+                                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold fs-4" style="width:55px; height:55px;">
+                                    ${v.name.charAt(0)}
+                                </div>
+                                <div>
+                                    <h5 class="fw-bold mb-0 text-dark">${v.name}</h5>
+                                    <span class="badge bg-light text-dark border">${v.faculty}</span>
+                                </div>
+                            </div>
+                            <p class="text-secondary small mb-3">${v.bio}</p>
+                        </div>
+                        <button class="btn btn-outline-primary btn-sm rounded-pill fw-bold w-100" onclick="navigateTo('venture-profile', ${v.id})">
+                            Ver Productos del Emprendimiento
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        /* ==================== CART CONTROLLER ==================== */
+        function addToCart(productId) {
+            const product = state.products.find(p => p.id === productId);
+            if (!product) return;
+
+            const existing = state.cart.find(i => i.id === productId);
+            if (existing) {
+                existing.quantity++;
+            } else {
+                state.cart.push({ ...product, quantity: 1 });
+            }
+
+            saveState();
+            updateNavbarState();
+            showToast(`'${product.title}' agregado al carrito`);
+        }
+
+        function addCurrentDetailToCart() {
+            const qty = parseInt(document.getElementById('detailQtyInput').value) || 1;
+            const product = state.products.find(p => p.id === state.selectedProductId);
+            if (!product) return;
+
+            const existing = state.cart.find(i => i.id === product.id);
+            if (existing) {
+                existing.quantity += qty;
+            } else {
+                state.cart.push({ ...product, quantity: qty });
+            }
+
+            saveState();
+            updateNavbarState();
+            showToast(`Se agregaron ${qty} unidad(es) de '${product.title}'`);
+        }
+
+        function renderCartView() {
+            const container = document.getElementById('cartItemsContainer');
+            if (state.cart.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-5">
+                        <i class="fa-solid fa-cart-arrow-down fs-1 text-muted mb-3"></i>
+                        <p class="text-muted">Tu carrito está vacío actualmente.</p>
+                        <button class="btn btn-primary rounded-pill btn-sm fw-bold" onclick="navigateTo('catalog')">Ir a Explorar Productos</button>
+                    </div>
+                `;
+                document.getElementById('cartSubtotal').textContent = "S/. 0.00";
+                document.getElementById('cartTotal').textContent = "S/. 0.00";
+                return;
+            }
+
+            let total = 0;
+            container.innerHTML = state.cart.map(item => {
+                const sub = item.price * item.quantity;
+                total += sub;
+                return `
+                    <div class="d-flex align-items-center gap-3 py-3 border-bottom">
+                        <img src="${item.image}" width="65" height="65" class="rounded-3 object-fit-cover">
+                        <div class="flex-grow-1">
+                            <h6 class="fw-bold mb-0 text-dark">${item.title}</h6>
+                            <span class="text-muted small">S/. ${item.price.toFixed(2)} c/u</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <button class="btn btn-sm btn-outline-secondary rounded-circle px-2" onclick="changeCartQty(${item.id}, -1)">-</button>
+                            <span class="fw-bold small px-2">${item.quantity}</span>
+                            <button class="btn btn-sm btn-outline-secondary rounded-circle px-2" onclick="changeCartQty(${item.id}, 1)">+</button>
+                        </div>
+                        <span class="fw-bold text-success ms-2">S/. ${sub.toFixed(2)}</span>
+                        <button class="btn btn-sm text-danger border-0 ms-2" onclick="removeCartItem(${item.id})"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('cartSubtotal').textContent = `S/. ${total.toFixed(2)}`;
+            document.getElementById('cartTotal').textContent = `S/. ${total.toFixed(2)}`;
+        }
+
+        function changeCartQty(id, change) {
+            const item = state.cart.find(i => i.id === id);
+            if (item) {
+                item.quantity += change;
+                if (item.quantity <= 0) state.cart = state.cart.filter(i => i.id !== id);
+                saveState();
+                renderCartView();
+                updateNavbarState();
+            }
+        }
+
+        function removeCartItem(id) {
+            state.cart = state.cart.filter(i => i.id !== id);
+            saveState();
+            renderCartView();
+            updateNavbarState();
+        }
+
+        function processOrderWhatsApp() {
+            if (state.cart.length === 0) return;
+
+            let text = "Hola! Quisiera realizar el siguiente pedido por UPAO UbNova:%0A%0A";
+            let total = 0;
+            state.cart.forEach(i => {
+                const sub = i.price * i.quantity;
+                total += sub;
+                text += `• ${i.quantity}x ${i.title} — S/. ${sub.toFixed(2)}%0A`;
+            });
+            text += `%0ATotal a Pagar: S/. ${total.toFixed(2)}%0A%0APedido generado desde la plataforma UPAO UbNova.`;
+
+            const phone = state.cart[0].phone || "51987654321";
+            window.open(`https://wa.me/${phone}?text=${text}`, '_blank');
+            
+            // Clear cart
+            state.cart = [];
+            saveState();
+            renderCartView();
+            updateNavbarState();
+            showToast("¡Pedido enviado por WhatsApp exitosamente!");
+        }
+
+        /* ==================== ENTREPRENEUR DASHBOARD ==================== */
+        function renderEntrepreneurDashboard() {
+            const venture = state.ventures[0]; // Active demo venture
+            document.getElementById('dashEntrepName').textContent = venture.name;
+            document.getElementById('entrepOwnerGreeting').textContent = venture.owner;
+
+            const myProducts = state.products.filter(p => p.ventureId === venture.id);
+            document.getElementById('statEntrepProducts').textContent = myProducts.length;
+            document.getElementById('statEntrepOrders').textContent = "18";
+
+            // Render Chart safely destroying existing instance
+            const ctx = document.getElementById('entrepSalesChart');
+            if (ctx) {
+                if (window.entrepChartInstance) {
+                    window.entrepChartInstance.destroy();
+                }
+                window.entrepChartInstance = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
+                        datasets: [{
+                            label: 'Consultas / Ventas',
+                            data: [12, 19, 15, 25, 22, 30],
+                            borderColor: '#003366',
+                            tension: 0.3,
+                            fill: true,
+                            backgroundColor: 'rgba(0, 51, 102, 0.08)'
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false }
+                });
+            }
+
+            // Render CRUD Products Table
+            const prodTable = document.getElementById('entrepProductsTable');
+            prodTable.innerHTML = myProducts.map(p => `
+                <tr>
+                    <td>
+                        <div class="d-flex align-items-center gap-2">
+                            <img src="${p.image}" width="40" height="40" class="rounded-2 object-fit-cover">
+                            <span class="fw-bold">${p.title}</span>
+                        </div>
+                    </td>
+                    <td><span class="badge bg-light text-dark border">${p.category}</span></td>
+                    <td class="fw-bold text-success">S/. ${p.price.toFixed(2)}</td>
+                    <td><span class="badge status-badge-active rounded-pill">Disponible</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary me-1 rounded-pill" onclick="openProductModal(${p.id})"><i class="fa-solid fa-pen"></i></button>
+                        <button class="btn btn-sm btn-outline-danger rounded-pill" onclick="deleteProduct(${p.id})"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+
+            // Render Orders
+            const ordersTable = document.getElementById('entrepOrdersTable');
+            ordersTable.innerHTML = `
+                <tr>
+                    <td>#PED-101</td>
+                    <td>Carlos Ramos (Derecho)</td>
+                    <td>24 Sep 2026</td>
+                    <td class="fw-bold">S/. 18.00</td>
+                    <td><span class="badge status-badge-active rounded-pill">Entregado</span></td>
+                    <td><button class="btn btn-sm btn-light border rounded-pill">Ver</button></td>
+                </tr>
+                <tr>
+                    <td>#PED-102</td>
+                    <td>Andrea Paz (Industrial)</td>
+                    <td>25 Sep 2026</td>
+                    <td class="fw-bold">S/. 10.00</td>
+                    <td><span class="badge status-badge-pending rounded-pill">Pendiente</span></td>
+                    <td><button class="btn btn-sm btn-success rounded-pill btn-sm fw-bold">Marcar Entregado</button></td>
+                </tr>
+            `;
+
+            // Fill Edit Profile
+            document.getElementById('editVentureName').value = venture.name;
+            document.getElementById('editVenturePhone').value = venture.phone;
+            document.getElementById('editVentureBio').value = venture.bio;
+        }
+
+        function switchDashEntrepTab(tabName) {
+            ['summary', 'my-products', 'orders', 'reviews', 'settings'].forEach(t => {
+                const el = document.getElementById(`entrep-tab-${t}`);
+                if (el) el.classList.add('d-none');
+            });
+            document.getElementById(`entrep-tab-${tabName}`).classList.remove('d-none');
+        }
+
+        function openProductModal(editId = null) {
+            const catSelect = document.getElementById('prodCategory');
+            catSelect.innerHTML = state.categories.map(c => `<option value="${c.id}">${c.id}</option>`).join('');
+
+            if (editId) {
+                const prod = state.products.find(p => p.id === editId);
+                document.getElementById('productModalTitle').textContent = "Editar Producto";
+                document.getElementById('prodEditId').value = prod.id;
+                document.getElementById('prodTitle').value = prod.title;
+                document.getElementById('prodCategory').value = prod.category;
+                document.getElementById('prodPrice').value = prod.price;
+                document.getElementById('prodImage').value = prod.image;
+                document.getElementById('prodDesc').value = prod.description;
+            } else {
+                document.getElementById('productModalTitle').textContent = "Publicar Nuevo Producto";
+                document.getElementById('prodEditId').value = '';
+                document.getElementById('prodTitle').value = '';
+                document.getElementById('prodPrice').value = '';
+                document.getElementById('prodImage').value = '';
+                document.getElementById('prodDesc').value = '';
+            }
+
+            new bootstrap.Modal(document.getElementById('productModal')).show();
+        }
+
+        function handleSaveProductSubmit(e) {
+            e.preventDefault();
+            const editId = document.getElementById('prodEditId').value;
+            const title = document.getElementById('prodTitle').value;
+            const category = document.getElementById('prodCategory').value;
+            const price = parseFloat(document.getElementById('prodPrice').value);
+            const image = document.getElementById('prodImage').value || "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&q=80&w=600";
+            const description = document.getElementById('prodDesc').value;
+
+            const venture = state.ventures[0];
+
+            if (editId) {
+                const p = state.products.find(prod => prod.id === parseInt(editId));
+                if (p) {
+                    p.title = title;
+                    p.category = category;
+                    p.price = price;
+                    p.image = image;
+                    p.description = description;
+                }
+            } else {
+                state.products.unshift({
+                    id: Date.now(),
+                    title,
+                    ventureId: venture.id,
+                    ventureName: venture.name,
+                    category,
+                    price,
+                    rating: 5.0,
+                    phone: venture.phone,
+                    image,
+                    description,
+                    reviews: []
+                });
+            }
+
+            saveState();
+            renderEntrepreneurDashboard();
+            bootstrap.Modal.getInstance(document.getElementById('productModal')).hide();
+            showToast("Producto guardado exitosamente");
+        }
+
+        function deleteProduct(id) {
+            if (confirm("¿Estás seguro de eliminar esta publicación?")) {
+                state.products = state.products.filter(p => p.id !== id);
+                saveState();
+                renderEntrepreneurDashboard();
+                showToast("Producto eliminado");
+            }
+        }
+
+        function handleSaveVentureProfile(e) {
+            e.preventDefault();
+            state.ventures[0].name = document.getElementById('editVentureName').value;
+            state.ventures[0].phone = document.getElementById('editVenturePhone').value;
+            state.ventures[0].bio = document.getElementById('editVentureBio').value;
+            saveState();
+            showToast("Perfil de emprendimiento actualizado");
+        }
+
+        /* ==================== SUPERADMIN DASHBOARD ==================== */
+        function renderAdminDashboard() {
+            document.getElementById('statAdminUsers').textContent = state.users.length;
+            document.getElementById('statAdminVentures').textContent = state.ventures.length;
+            document.getElementById('statAdminProducts').textContent = state.products.length;
+            document.getElementById('statAdminOrders').textContent = "42";
+
+            // Admin Chart safely destroying existing instance
+            const ctx = document.getElementById('adminGlobalChart');
+            if (ctx) {
+                if (window.adminChartInstance) {
+                    window.adminChartInstance.destroy();
+                }
+                window.adminChartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Alimentos', 'Bebidas', 'Tecnología', 'Diseño', 'Educación'],
+                        datasets: [{
+                            label: 'Publicaciones por Categoría',
+                            data: [15, 8, 12, 6, 9],
+                            backgroundColor: '#003366'
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false }
+                });
+            }
+
+            // Ventures Table Moderation
+            const ventTable = document.getElementById('adminVenturesTable');
+            ventTable.innerHTML = state.ventures.map(v => `
+                <tr>
+                    <td class="fw-bold">${v.name}</td>
+                    <td>${v.owner} <br><span class="text-muted small">${v.faculty}</span></td>
+                    <td>+${v.phone}</td>
+                    <td><span class="badge ${v.status === 'Activo' ? 'status-badge-active' : 'status-badge-pending'} rounded-pill">${v.status}</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-success rounded-pill fw-bold me-1" onclick="toggleVentureStatus(${v.id}, 'Activo')">Aprobar</button>
+                        <button class="btn btn-sm btn-outline-danger rounded-pill fw-bold" onclick="toggleVentureStatus(${v.id}, 'Suspendido')">Suspender</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            // Users Table
+            const usersTable = document.getElementById('adminUsersTable');
+            usersTable.innerHTML = state.users.map(u => `
+                <tr>
+                    <td class="fw-bold">${u.name}</td>
+                    <td>${u.email}</td>
+                    <td><span class="badge bg-primary rounded-pill">${u.role}</span></td>
+                    <td><span class="badge status-badge-active rounded-pill">${u.status}</span></td>
+                    <td><button class="btn btn-sm btn-light border rounded-pill">Editar</button></td>
+                </tr>
+            `).join('');
+
+            // Products Global Table
+            const prodGlobal = document.getElementById('adminProductsGlobalTable');
+            prodGlobal.innerHTML = state.products.map(p => `
+                <tr>
+                    <td><img src="${p.image}" width="35" height="35" class="rounded"> <strong>${p.title}</strong></td>
+                    <td>${p.ventureName}</td>
+                    <td class="fw-bold">S/. ${p.price.toFixed(2)}</td>
+                    <td><button class="btn btn-sm btn-outline-danger rounded-pill" onclick="deleteProduct(${p.id})">Ocultar/Eliminar</button></td>
+                </tr>
+            `).join('');
+
+            // Categories list
+            const catList = document.getElementById('adminCategoriesList');
+            catList.innerHTML = state.categories.map(c => `
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span><i class="fa-solid ${c.icon} text-primary me-2"></i>${c.id}</span>
+                    <button class="btn btn-sm text-danger border-0"><i class="fa-solid fa-trash"></i></button>
+                </li>
+            `).join('');
+        }
+
+        function switchAdminTab(tabName) {
+            ['summary', 'ventures', 'users', 'products', 'categories'].forEach(t => {
+                const el = document.getElementById(`admin-tab-${t}`);
+                if (el) el.classList.add('d-none');
+            });
+            document.getElementById(`admin-tab-${tabName}`).classList.remove('d-none');
+        }
+
+        function toggleVentureStatus(id, newStatus) {
+            const v = state.ventures.find(vent => vent.id == id);
+            if (v) {
+                v.status = newStatus;
+                saveState();
+                renderAdminDashboard();
+                showToast(`Estado de '${v.name}' cambiado a ${newStatus}`);
+            }
+        }
+
+        function promptAddCategory() {
+            const name = prompt("Nombre de la nueva categoría:");
+            if (name) {
+                state.categories.push({ id: name, icon: "fa-tag" });
+                saveState();
+                renderAdminDashboard();
+                showToast("Categoría agregada");
+            }
+        }
+
+        /* ==================== AUTHENTICATION SIMULATION ==================== */
+        function openLoginModal() { new bootstrap.Modal(document.getElementById('loginModal')).show(); }
+        function openRegisterModal() { new bootstrap.Modal(document.getElementById('registerModal')).show(); }
+
+        function fillDemoAuth(role) {
+            if (role === 'emprendedor') {
+                document.getElementById('loginEmail').value = 'emprendedor@upao.edu.pe';
+                document.getElementById('loginPass').value = '123456';
+            } else {
+                document.getElementById('loginEmail').value = 'admin@upao.edu.pe';
+                document.getElementById('loginPass').value = 'admin123';
+            }
+        }
+
+        function handleLoginSubmit(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const user = state.users.find(u => u.email === email);
+
+            if (user) {
+                state.currentUser = user;
+                saveState();
+                bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();
+                showToast(`¡Bienvenido, ${user.name}!`);
+
+                if (user.role === 'admin') navigateTo('dashboard-admin');
+                else navigateTo('dashboard-entrepreneur');
+            } else {
+                alert("Credenciales inválidas.");
+            }
+        }
+
+        function handleRegisterSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const faculty = document.getElementById('regFaculty').value;
+            const phone = document.getElementById('regPhone').value;
+            const vName = document.getElementById('regVentureName').value;
+            const bio = document.getElementById('regDescription').value;
+
+            const newVenture = {
+                id: Date.now(),
+                name: vName,
+                owner: name,
+                faculty,
+                phone,
+                status: "Pendiente",
+                bio
+            };
+
+            state.ventures.unshift(newVenture);
+            saveState();
+
+            bootstrap.Modal.getInstance(document.getElementById('registerModal')).hide();
+            alert("Tu emprendimiento ha sido registrado correctamente y está pendiente de validación por el superadministrador.");
+            navigateTo('home');
+        }
+
+        function logout() {
+            state.currentUser = null;
+            saveState();
+            showToast("Sesión cerrada");
+            navigateTo('home');
+        }
+
+        /* ==================== CHATBOT VIRTUAL ASSISTANT ==================== */
+        function toggleChatbot() {
+            const box = document.getElementById('assistantChatBox');
+            box.style.display = (box.style.display === 'flex') ? 'none' : 'flex';
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('chatInputText');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const container = document.getElementById('chatMessagesContainer');
+            container.innerHTML += `<div class="chat-msg-bubble chat-msg-user">${text}</div>`;
+            input.value = '';
+
+            // Generate Automated Bot Answer
+            setTimeout(() => {
+                let botAnswer = "Puedo ayudarte a buscar postres, artículos de tecnología o explicarte cómo publicar tu negocio en UbNova.";
+                const q = text.toLowerCase();
+
+                if (q.includes('comida') || q.includes('brownie') || q.includes('postre')) {
+                    botAnswer = "🍰 ¡En la sección Alimentos tenemos Brownies de Chocolate por S/. 5.00 y Cheesecake de Frutos Rojos!";
+                } else if (q.includes('vender') || q.includes('publicar') || q.includes('registro')) {
+                    botAnswer = "🚀 Puedes registrar tu negocio dando clic en el botón 'Registrar mi Emprendimiento' en la barra superior. Un administrador aprobará tu cuenta.";
+                } else if (q.includes('carrito') || q.includes('pedido') || q.includes('whatsapp')) {
+                    botAnswer = "🛒 Agrega tus productos al carrito y haz clic en 'Realizar Pedido por WhatsApp' para coordinar la entrega en el campus UPAO.";
+                }
+
+                container.innerHTML += `<div class="chat-msg-bubble chat-msg-bot">${botAnswer}</div>`;
+                container.scrollTop = container.scrollHeight;
+            }, 600);
+        }
+
+        /* ==================== TOAST HELPER ==================== */
+        function showToast(msg) {
+            document.getElementById('toastMsg').textContent = msg;
+            const toast = new bootstrap.Toast(document.getElementById('appToast'));
+            toast.show();
+        }
+
+        /* ==================== INITIALIZATION ==================== */
+        window.addEventListener('DOMContentLoaded', () => {
+            navigateTo('home');
+        });
+    </script>
+</body>
+</html>
